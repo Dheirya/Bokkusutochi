@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta charset="UTF-8">
+      <style>
+         * {
+             margin:0;
+             padding:0;
+        }
+         canvas {
+             display:block;
+             border:1px solid #333;
+             box-shadow:0 0 16px 2px rgba(0,0,0,0.8);
+             margin:40px auto 20px;
+        }
+         p,a {
+             font-size:19px;
+             colour:#777;
+             display:block;
+             width:800px;
+             text-align:center;
+             text-decoration:none;
+             margin:0 auto;
+        }
+        h2 {
+             colour:#777;
+             display:block;
+             width:400px;
+             text-align:center;
+             text-decoration:none;
+             margin:0 auto;
+             margin-top: 20px;
+             margin-bottom: -15px;
+        }
+         h1 {
+             margin-top:15px;
+             margin-bottom:-15px;
+             text-align:center;
+        }
+         .info {
+             text-align:justify;
+             font-size:18px;
+             colour:#999;
+             margin:14px auto;
+        }
+         a {
+             colour:#37e;
+        }
+         @font-face {
+             font-family:'Luxurious Roman';
+             font-style:normal;
+             font-weight:400;
+             src:url(https://fonts.gstatic.com/s/luxuriousroman/v1/buEupou_ZcP1w0yTKxJJokVSmbpaZQ0lWIxBMg.woff2) format(woff2);
+             unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+        }
+         html, body {
+             background:#B6D8C0;
+             font-family:'Luxurious Roman';
+             margin:0;
+             padding:0;
+        }
+         .closeimg {
+             cursor:pointer;
+             width:100px;
+             position:absolute;
+             right:1%;
+             top:1%;
+        }
+        #game-container {
+           width: 800px;
+           height: 600px;
+           position: relative;
+           margin:40px auto 20px;
+         }
+         #canvas {
+           height: 100%;
+           width: 100%;
+         }
+         #controls-1 {
+           top: 0;
+           left: 0;
+           position: absolute;
+         }
+         #controls-2 {
+           top: 0;
+           right: 0;
+           position: absolute;
+         }
+         button {
+            border: none;
+            color: white;
+            padding: 4px 8px;
+            text-decoration: none;
+            font-family:'Luxurious Roman';
+            font-size: 16px;
+            margin: 0;
+            margin-bottom: -2px;
+            background-color: #e7e7e7; color: black;
+            cursor: pointer;
+         }
+      </style>
+      <title>Bokkusutochi ~ ボックス-土地 ベータ</title>
+   </head>
+   <body>
+      <img class="closeimg" onclick="stopmusic()" src="https://icon-library.com/images/music-icon-transparent/music-icon-transparent-10.jpg"/>
+      <h1>Bokkusutochi Beta ~ ボックス-土地 ベータ</h1>
+      <h2 id="level">Loading...</h2>
+      <div id="game-container">
+         <canvas id="canvas"></canvas>
+         <button id="controls-1" style="margin-left:-2px" onclick="help()">Help!</button>
+         <button id="controls-2" style="margin-right:-2px" onclick="resetmap()">Reset</button>
+      </div>
+      <center id="comming-soon" style="display:none"><img src="https://www.stdastoriayouth.com/uploads/1/0/2/2/102239676/coming-soon_1.jpg" style="margin-top:20px"/></center>
+      <p id="message">Loading...</p>
+      <p id="scream" style="display:none"><strong>SCREAM...</strong></p>
+      <p id="trap" style="display:none;color:red"><strong>- You are Trapped. You must Reset -</strong></p>
+      <script type="text/javascript" src="bokku.min.js"></script>
+      <script type="text/javascript" src="map_1.js"></script>
+      <script type="text/javascript" src="map_2.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script>
+         window.requestAnimFrame =
+            window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback) {
+                return window.setTimeout(callback, 1000 / 60);
+            };
+        var canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
+        canvas.width = 800;
+        canvas.height = 600;
+        var game = new Bokku();
+        game.set_viewport(canvas.width, canvas.height);
+        if(localStorage.getItem('level') == "1"){
+           document.getElementById("level").innerHTML="Level 1: The House";
+           var level = "1";
+           game.load_map(map1);
+        }else if(localStorage.getItem('level') == "2"){
+           var level = "2";
+           game.load_map(map2);
+           document.getElementById("level").innerHTML="Level 2: Mystic Caverns";
+           document.getElementById("message").innerHTML="After finding a mysterious box while exploring the new house, you fall in and get teleported to a cavern. You look around and realize you friend must not buy that house as it seems mysterious and dangerous, so you have to escape quickly before your friend makes the deal.";
+        }else{
+           document.getElementById("level").innerHTML="Level 1: The House";
+           var level = "1";
+           game.load_map(map1);
+        }
+        function resetmap() {
+            document.getElementById("trap").style.display="none";
+            var mapstring = "map" + level;
+            game.load_map(window[mapstring]);
+        }
+        function help() {
+            if(level==1){
+                 Swal.fire({
+                 icon: 'info',
+                 title: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Help',
+                 html: `<p style="margin-left:-170px"><strong>Basic Controls:</strong> WASD Keys or Arrow Keys To</p>
+                        <p style="margin-left:-170px">Move</p><br/>
+                        <p style="margin-left:-170px"><strong>Level Hint:</strong> Try to touch the blue blocks so</p>
+                        <p style="margin-left:-170px">it opens up new paths. Remember to use the</p>
+                        <p style="margin-left:-170px">green blocks to jump higher, and dodge the red</p>
+                        <p style="margin-left:-170px">blocks.</p>
+                 `,
+                 footer: 'Still need help? Shoot us an email here: <a href="mailto:mail@socialrumbles.com">mail@socialrumbles.com</a>'
+               });
+            }else if(level==2){
+               Swal.fire({
+                 icon: 'info',
+                 title: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Help',
+                 html: `<p style="margin-left:-170px"><strong>Basic Controls:</strong> WASD Keys or Arrow Keys To</p>
+                        <p style="margin-left:-170px">Move</p><br/>
+                        <p style="margin-left:-170px"><strong>Level Hint:</strong> In the beginning, don't jump on</p>
+                        <p style="margin-left:-170px">all the green blocks as you will hit the lava on top.</p>
+                        <p style="margin-left:-170px">To jump higher on green blocks, press jump while</p>
+                        <p style="margin-left:-170px">touching the bottom and repeat to gain height.</p>
+                        <p style="margin-left:-170px">In the water, don't touch the light blue blocks</p>
+                        <p style="margin-left:-170px">or you will be trapped and have to reset.</p>
+                 `,
+                 footer: 'Still need help? Shoot us an email here: <a href="mailto:mail@socialrumbles.com">mail@socialrumbles.com</a>'
+               });
+            }
+        }
+        game.limit_viewport = true;
+        var Loop = function() {
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            game.update();
+            game.draw(ctx);
+            window.requestAnimFrame(Loop);
+        };
+        Loop();
+      </script>
+   </body>
+</html>
