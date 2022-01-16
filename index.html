@@ -76,6 +76,7 @@
              font-family:'Luxurious Roman';
              margin:0;
              padding:0;
+             overflow: hidden;
         }
          .closeimg {
              cursor:pointer;
@@ -119,7 +120,7 @@
       </style>
       <title>Bokkusutochi ~ ボックス-土地 ベータ</title>
    </head>
-   <body>
+   <body oncontextmenu="return false">
       <img id="closeimg" class="closeimg" onclick="stopmusic()" src="https://icon-library.com/images/music-icon-transparent/music-icon-transparent-10.jpg"/>
       <h1>Bokkusutochi Beta ~ ボックス-土地 ベータ</h1>
       <div id="mobilemessage" style="display:none">
@@ -142,6 +143,11 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <script>
+         window.addEventListener("keydown", function(e) {
+             if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+                 e.preventDefault();
+             }
+         }, false);
          if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
             document.getElementById("level").remove();
             document.getElementById("game-container").remove();
@@ -179,6 +185,9 @@
            game.load_map(map1);
         }
         function resetmap() {
+            if(level==2){
+               window.location.reload();
+            }
             document.getElementById("trap").style.display="none";
             var mapstring = "map" + level;
             game.load_map(window[mapstring]);
