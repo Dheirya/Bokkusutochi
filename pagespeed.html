@@ -5,6 +5,12 @@
 </head>
 <body>
 <h1 id="UserAgent"></h1>
-<script>document.getElementById('UserAgent').innerHTML = navigator.userAgent;</script>
+<h1 id="Lighthouse"></h1>
+<script>
+document.getElementById('UserAgent').innerHTML = navigator.userAgent;
+if(navigator.userAgent.includes("Chrome-Lighthouse")){
+document.getElementById('Lighthouse').innerHTML = "True";
+}
+</script>
 </body>
 </html>
